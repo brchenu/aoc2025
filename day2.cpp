@@ -11,7 +11,7 @@ int count_digits(long long val) {
 
 bool is_odd(long long val) { return val % 2 != 0; }
 
-bool is_repeated(long long val) {
+bool is_repeated_twice(long long val) {
     int len = count_digits(val);
 
     if (is_odd(len))
@@ -25,16 +25,39 @@ bool is_repeated(long long val) {
     return first == second;
 }
 
-double decimal(double value) {
-    int floor = static_cast<int>(value);
-    return value - floor;
+bool is_repeated(long long val) {
+    int len = count_digits(val);
+
+    int half = len / 2;
+
+    std::string word = std::to_string(val);
+
+    for (int w = half; w > 0; --w) {
+        if (len % w != 0)
+            continue;
+        std::string match = word.substr(0, w);
+        bool is_repeting = true;
+        for (int j = w; j < len; j += w) {
+            if (match != word.substr(j, w)) {
+                is_repeting = false;
+                break;
+            }
+        }
+
+        if (is_repeting)
+            return true;
+    }
+
+    return false;
 }
 
 int main() {
     std::ifstream file("day2.txt");
     std::vector<std::pair<int, int>> ranges;
 
-    long long count = 0;
+    long long part1 = 0;
+    long long part2 = 0;
+
     if (file) {
         std::string line;
         std::getline(file, line);
@@ -59,13 +82,19 @@ int main() {
             long long max = std::stoll(str_max);
 
             for (long long i = min; i <= max; i++) {
+                // Part 1
+                if (is_repeated_twice(i)) {
+                    part1 += i;
+                }
+                // Part 2
                 if (is_repeated(i)) {
-                    count += i;
+                    part2 += i;
                 }
             }
         }
     }
 
-    std::cout << "Day 2 | Part 1 | C++ result: " << count << "\n";
+    std::cout << "Day 2 | Part 1 | C++ result: " << part1 << "\n";
+    std::cout << "Day 2 | Part 2 | C++ result: " << part2 << "\n";
     return 0;
 }
