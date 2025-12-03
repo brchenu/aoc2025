@@ -1,4 +1,4 @@
-.PHONY: day1
+.PHONY: d1 d2 d3
 
 d1:
 	clang++ day1.cpp && ./a.out
@@ -7,3 +7,6 @@ d1:
 d2:
 	clang++ day2.cpp && ./a.out
 	python3 day2.py
+
+d3:
+	clang++ day3.cpp && ./a.out
