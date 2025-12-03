@@ -4,15 +4,18 @@
 #include <string>
 
 int main() {
+    constexpr int LOCK_LENGTH = 100;
+    constexpr int START_POS = 50;
+
     std::ifstream file("day1.txt");
-    if (!file.is_open()) {
+    if (!file) {
         std::cerr << "Error while opening the file!";
-        std::abort();
+        return 1;
     }
 
     std::string line;
 
-    int pos = 50;
+    int pos = START_POS;
     int count_pt1 = 0;
     int count_pt2 = 0;
 
@@ -20,8 +23,8 @@ int main() {
         char side = line[0];
         int quantity = std::stoi(line.substr(1));
 
-        while (quantity > 100) {
-            quantity -= 100;
+        while (quantity > LOCK_LENGTH) {
+            quantity -= LOCK_LENGTH;
             count_pt2++;
         }
 
@@ -29,15 +32,15 @@ int main() {
             if (pos - quantity < 0 && pos != 0)
                 count_pt2++;
 
-            pos = (pos - quantity) % 100;
+            pos = (pos - quantity) % LOCK_LENGTH;
 
             if (pos < 0)
-                pos += 100;
+                pos += LOCK_LENGTH;
         } else {
-            if (pos + quantity > 100)
+            if (pos + quantity > LOCK_LENGTH)
                 count_pt2++;
 
-            pos = (pos + quantity) % 100;
+            pos = (pos + quantity) % LOCK_LENGTH;
         }
 
         if (pos == 0)
