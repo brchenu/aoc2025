@@ -12,4 +12,4 @@ d3:
 	clang++ day3.cpp && ./a.out
 
 d4: 
-	clang++ day4.cpp && ./a.out
+	clang++ -std=c++20 day4.cpp && ./a.out
