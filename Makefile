@@ -1,4 +1,4 @@
-.PHONY: d1 d2 d3 d4
+.PHONY: d1 d2 d3 d4 d5
 
 d1:
 	clang++ day1.cpp && ./a.out
@@ -13,3 +13,6 @@ d3:
 
 d4: 
 	clang++ -std=c++20 day4.cpp && ./a.out
+
+d5:
+	clang++ day5.cpp && ./a.out
