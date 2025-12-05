@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <numeric>
+#include <optional>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -8,8 +11,41 @@ struct Range {
     long long min{};
     long long max{};
 
+    long long range() const { return max - min + 1; }
+
     bool in_range(long long val) const { return val >= min && val <= max; }
+
+    std::optional<Range> union_range(const Range &other) const {
+        // Check if ranges overlap or are adjacent (touching)
+        if (max < other.min - 1 || other.max < min - 1) {
+            return std::nullopt; // No overlap and not adjacent
+        }
+        return Range{std::min(min, other.min), std::max(max, other.max)};
+    }
 };
+
+std::vector<Range> collapse_ranges(std::vector<Range> ranges) {
+    if (ranges.empty()) return {};
+
+    // Sort by min value first
+    std::sort(ranges.begin(), ranges.end(),
+              [](const Range &a, const Range &b) { return a.min < b.min; });
+
+    std::vector<Range> final_ranges;
+    Range current = ranges[0];
+    for (size_t i = 1; i < ranges.size(); ++i) {
+        auto merged = current.union_range(ranges[i]);
+        if (merged) {
+            current = *merged;
+        } else {
+            final_ranges.push_back(current);
+            current = ranges[i];
+        }
+    }
+    final_ranges.push_back(current);
+
+    return final_ranges;
+}
 
 std::ostream &operator<<(std::ostream &os, const Range &r) {
     return os << "R[" << r.min << ", " << r.max << "]\n";
@@ -47,16 +83,28 @@ int main() {
         }
     }
 
-    int p1_count_fresh = 0; 
+    // Part 1
+    int p1_count_fresh = 0;
     for (long long id : ids) {
-        for (const auto &r : ranges) {
-            if (r.in_range(id)) {
-                p1_count_fresh++;
-                break;
-            }
+        bool is_fresh =
+            std::any_of(ranges.begin(), ranges.end(),
+                        [&](const Range &r) { return r.in_range(id); });
+
+        if (is_fresh) {
+            p1_count_fresh++;
         }
     }
 
-    std::cout << "Day 5 | Part 1 | C++ results: " << p1_count_fresh << std::endl;
+    // Part 2
+    std::vector<Range> final_ranges = collapse_ranges(ranges);
+
+    long long p2_count_ids = std::accumulate(
+        final_ranges.begin(), final_ranges.end(), 0LL,
+        [&](long long acc, const Range &r) { return acc + r.range(); });
+
+    std::cout << "Day 5 | Part 1 | C++ results: " << p1_count_fresh
+              << std::endl;
+
+    std::cout << "Day 5 | Part 2 | C++ results: " << p2_count_ids << std::endl;
     return 0;
 }
