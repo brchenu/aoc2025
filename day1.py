@@ -1,25 +1,28 @@
 with open("day1.txt", "r") as f:
     lines = f.readlines()
 
+INITIAL_POS = 50
+MAX_POS = 100
+
 count_pt1 = 0
 count_pt2 = 0
-pos = 50
+
+pos = INITIAL_POS
 
 for line in lines:
-    side = line[:1]
-    quantity = int(line[1:])
+    side, quantity = line[0], int(line[1:])
 
-    while quantity > 100:
-        quantity -= 100
+    while quantity > MAX_POS:
+        quantity -= MAX_POS
         count_pt2 += 1
 
-    if side == 'L':
-        quantity = -quantity  
+    if side == "L":
+        quantity = -quantity
 
-    if (pos + quantity > 100 or pos + quantity < 0) and pos != 0:
+    if (pos + quantity > MAX_POS or pos + quantity < 0) and pos != 0:
         count_pt2 += 1
 
-    pos = (pos + quantity) % 100
+    pos = (pos + quantity) % MAX_POS
 
     if pos == 0:
         count_pt1 += 1

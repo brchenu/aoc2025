@@ -16,3 +16,4 @@ d4:
 
 d5:
 	clang++ -std=c++20 day5.cpp && ./a.out
+	python3 day5.py
